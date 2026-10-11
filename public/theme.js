@@ -7,16 +7,20 @@
     const dark = preference === 'dark' || (preference === 'system' && media.matches);
     document.documentElement.dataset.theme = dark ? 'dark' : 'light';
     document.querySelector('meta[name="theme-color"]').content = dark ? '#131a17' : '#f7f7f0';
+    for (const button of document.querySelectorAll('[data-theme-choice]')) {
+      button.setAttribute('aria-pressed', String(button.dataset.themeChoice === preference));
+    }
   };
   apply();
   media.addEventListener('change', apply);
   document.addEventListener('DOMContentLoaded', () => {
-    const select = document.querySelector('#theme');
-    select.value = preference;
-    select.addEventListener('change', () => {
-      preference = select.value;
-      try { localStorage.setItem('nhl-theme', preference); } catch {}
-      apply();
-    });
+    apply();
+    for (const button of document.querySelectorAll('[data-theme-choice]')) {
+      button.addEventListener('click', () => {
+        preference = button.dataset.themeChoice;
+        try { localStorage.setItem('nhl-theme', preference); } catch {}
+        apply();
+      });
+    }
   });
 })();

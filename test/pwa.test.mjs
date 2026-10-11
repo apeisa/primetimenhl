@@ -10,22 +10,24 @@ test('theme follows system changes, remembers explicit choice and tolerates bloc
   for (const blocked of [false, true]) {
     let stored;
     const listeners = {};
-    const media = { matches: true, addEventListener: (_, callback) => { listeners.system = callback; } };
-    const select = { value: '', addEventListener: (_, callback) => { listeners.select = callback; } };
+    const media = { matches: true, addEventListener: (_, callback) => { listeners.systemChange = callback; } };
+    const buttons = ['system', 'light', 'dark'].map(value => ({ dataset: { themeChoice: value },
+      setAttribute: (_, pressed) => { listeners[value + 'Pressed'] = pressed; },
+      addEventListener: (_, callback) => { listeners[value] = callback; } }));
     const meta = {};
-    const document = { documentElement: { dataset: {} }, querySelector: selector => selector === '#theme' ? select : meta,
+    const document = { documentElement: { dataset: {} }, querySelector: () => meta, querySelectorAll: () => buttons,
       addEventListener: (_, callback) => { listeners.ready = callback; } };
     vm.runInNewContext(code, { document, window: { matchMedia: () => media }, localStorage: {
       getItem: () => { if (blocked) throw Error('blocked'); return stored; },
       setItem: (_, value) => { if (blocked) throw Error('blocked'); stored = value; }
     } });
     assert.equal(document.documentElement.dataset.theme, 'dark');
-    listeners.ready(); assert.equal(select.value, 'system');
-    media.matches = false; listeners.system(); assert.equal(document.documentElement.dataset.theme, 'light');
-    select.value = 'dark'; listeners.select(); assert.equal(document.documentElement.dataset.theme, 'dark');
+    listeners.ready(); assert.equal(listeners.systemPressed, 'true');
+    media.matches = false; listeners.systemChange(); assert.equal(document.documentElement.dataset.theme, 'light');
+    listeners.dark(); assert.equal(document.documentElement.dataset.theme, 'dark');
     if (!blocked) assert.equal(stored, 'dark');
-    media.matches = false; listeners.system(); assert.equal(document.documentElement.dataset.theme, 'dark');
-    select.value = 'system'; listeners.select(); assert.equal(document.documentElement.dataset.theme, 'light');
+    media.matches = false; listeners.systemChange(); assert.equal(document.documentElement.dataset.theme, 'dark');
+    listeners.system(); assert.equal(document.documentElement.dataset.theme, 'light');
   }
 });
 

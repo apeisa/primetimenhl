@@ -30,9 +30,12 @@ h1 { font-size: 32px; letter-spacing: -.8px; line-height: 1.2; margin: 0 0 14px;
 .toggle input:checked + .switch { background: var(--deep); }
 .toggle input:checked + .switch::after { transform: translateX(14px); }
 .toggle small { display: block; margin-top: 5px; font-size: 11px; font-weight: 400; color: var(--muted); }
-.theme-select { margin-left: auto; }
-.theme-select label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
-.theme-select select { border: 1px solid var(--line); border-radius: 5px; padding: 7px 9px; background: var(--paper); color: var(--ink); font-size: 13px; }
+.theme-picker { position: fixed; top: max(16px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); z-index: 5; display: flex; gap: 3px; padding: 5px; background: var(--paper); border: 1px solid var(--line); border-radius: 30px; box-shadow: 0 4px 18px #00000014; }
+.theme-picker button { display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; color: var(--muted); background: transparent; cursor: pointer; }
+.theme-picker button:hover { background: var(--panel); color: var(--ink); }
+.theme-picker button[aria-pressed="true"] { background: var(--badge); color: var(--badge-ink); }
+.theme-picker svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.page-header { padding-right: 140px; }
 .total-count { color: var(--muted); font-size: 12px; margin: 18px 0 24px; }
 .day + .day { margin-top: 28px; }
 .day-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -41,7 +44,7 @@ h1 { font-size: 32px; letter-spacing: -.8px; line-height: 1.2; margin: 0 0 14px;
 .games { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .game { display: grid; grid-template-columns: 85px 1fr auto; gap: 18px; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--line); }
 .game-time time { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.game-time > span { display: block; font-size: 9px; color: var(--muted); margin-top: 5px; }
+.game-time { align-self: start; }
 .teams a { text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.7; }
 .teams a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .versus { padding: 0 9px; font-weight: 400; color: var(--muted); }
@@ -50,7 +53,6 @@ h1 { font-size: 32px; letter-spacing: -.8px; line-height: 1.2; margin: 0 0 14px;
 .channel { border-radius: 5px; padding: 9px 10px; font-size: 11px; text-decoration: none; white-space: nowrap; border: 1px solid var(--line); }
 .channel-free { background: var(--badge); color: var(--badge-ink); }
 .channel-paid { background: var(--panel); color: var(--muted); }
-.channel:hover { border-color: var(--deep); }
 .unknown { font-size: 11px; color: var(--muted); }
 .notice { padding: 14px; background: var(--panel); font-size: 12px; line-height: 1.6; }
 .empty-state { text-align: center; padding: 30px 20px; border: 1px dashed var(--line); border-radius: 8px; }
@@ -65,11 +67,10 @@ footer p { margin: 0 0 12px; }
   .game-time { grid-row: 1 / 3; }
 }
 @media (max-width: 620px) {
-  .shell { padding: 28px 20px 20px; }
+  .shell { padding: 80px 20px 20px; }
+  .page-header { padding-right: 0; }
   h1 { font-size: 27px; }
   .filters { display: grid; grid-template-columns: 1fr; gap: 20px; }
-  .theme-select { margin-left: 0; border-top: 1px solid var(--line); padding-top: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .theme-select label { margin: 0; font-size: 12px; }
   .game { grid-template-columns: 62px 1fr; padding: 20px 0; }
   .game-time time { font-size: 22px; }
   .teams a { font-size: 14px; }
