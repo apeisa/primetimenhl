@@ -15,7 +15,7 @@ npm run build
 npm run preview
 ```
 
-Esikatselu: <http://127.0.0.1:4173/>. `dist/` sisältää julkaistavan HTML:n, CSS:n, JavaScriptin, faviconin ja `games.json`-aineiston. Sivun vierailut eivät tee pyyntöjä TV-oppaiden tai NHL:n rajapintoihin. Kaikki resurssipolut ovat suhteellisia, joten sivu toimii myös GitHub Pagesin projektihakemistossa.
+Esikatselu: <http://127.0.0.1:4173/>. `dist/` sisältää julkaistavan HTML:n, CSS:n, JavaScriptin, PWA-tiedostot ja `games.json`-aineiston. Sivun vierailut eivät tee pyyntöjä TV-oppaiden tai NHL:n rajapintoihin. Kaikki resurssipolut ovat suhteellisia, joten sivu toimii myös GitHub Pagesin projektihakemistossa.
 
 Suodattimien tila tallennetaan URL:n hakuehtoihin, joten näkymän voi jakaa linkkinä. Ilman hakuehtoja molemmat oletussuodattimet ovat päällä. Jo alkaneet pelit piilotetaan selaimessa minuutin välein.
 
@@ -53,10 +53,10 @@ Primetime tarkoittaa Suomen aikaa klo 12.00–24.00 alkavaa peliä. Tasan keskiy
 
 Jokaisen lähteen viimeisin onnistuneesti jäsennetty tulos tallennetaan `.cache/`-hakemistoon. GitHub Actions säilyttää sen seuraavaa ajoa varten. HTTP-virhe tai muuttunut tietorakenne ei korvaa lähteen aiempaa aineistoa.
 
-- Haku epäonnistui: käytetään korkeintaan 48 tuntia vanhaa lähdeaineistoa, ja sivu näyttää häiriöstä ilmoituksen.
+- Haku epäonnistui: käytetään korkeintaan 48 tuntia vanhaa lähdeaineistoa, ja häiriön tiedot tallentuvat `games.json`-tiedostoon.
 - Yli 48 tuntia vanha kanavatieto: sitä ei esitetä vahvistettuna.
 - Tuoretta NHL-otteluohjelmaa ei ole: generointi epäonnistuu ja aiempi julkaistu sivu jää voimaan.
-- Selain ilmoittaa yli vuorokauden vanhasta sivusta. Jokaisen lähteen oma hakuaika ja oppaan kattavuus näkyvät sivun lopun lähdetiedoissa.
+- Päivitysaika näkyy sivun lopussa. Jokaisen lähteen oma hakuaika ja oppaan kattavuus löytyvät `games.json`-tiedostosta.
 
 Jotkin palveluntarjoajien HTTPS-palvelimet lähettävät puutteellisen varmenneketjun. Tällöin GET-haku kokeilee järjestelmän `curl`-komentoa, joka tarkistaa varmenteet normaalisti. TLS-tarkistuksia ei poisteta käytöstä.
 
@@ -96,3 +96,11 @@ Tämä on muotoesimerkki, ei vahvistus kyseisen pelin Disney+-lähetyksestä. Ot
 `npm test` tarkistaa keskiyön ja kesäajan käsittelyn, joukkueiden tunnistuksen, uusintojen ja epäselvien osumien poissulkemisen, kanavien yhdistämisen, ohjelmaoppaiden jäsentämisen, välimuistin palautumisen, korjaukset sekä HTML:n oletussuodatuksen ja tekstien escapetuksen. Testit eivät tarvitse verkkoyhteyttä.
 
 Palvelu on riippumaton otteluopas. Lähetysoikeuksia ei päätellä yleisestä kausisopimuksesta; ottelukohtainen kanavamerkintä perustuu ohjelmatietoihin.
+
+## Teema ja asennus
+
+Teema seuraa oletuksena järjestelmää. Teemavalinnan voi vaihtaa vaaleaksi tai tummaksi; selain muistaa valinnan. Sivulla ei ole kanavakohtaista suodatinta.
+
+Sivun voi asentaa kotinäytölle selaimen asennustoiminnolla (iPhonessa Safari → Jaa → Lisää Koti-valikkoon). Manifestin polut toimivat myös GitHub Pagesin projektihakemistossa. Sovellusikonia käytetään vain kotinäytöllä.
+
+Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Alkanut ottelu piilotetaan myös offline-tilassa.
