@@ -15,7 +15,8 @@ function gameRow(game) {
   </li>`;
 }
 
-export function render({ games, generatedAt, days }) {
+export function render({ games, generatedAt, days, assetVersion = '' }) {
+  const assetQuery = assetVersion ? `?v=${escapeHtml(assetVersion)}` : '';
   const now = new Date(generatedAt);
   const groups = new Map();
   for (const game of games) {
@@ -29,7 +30,7 @@ export function render({ games, generatedAt, days }) {
   </section>`).join('');
   const lastDate = addDays(localParts(now).date, days - 1);
   return `<!doctype html>
-<html lang="fi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>Tulevat NHL-pelit Suomessa</title><meta name="description" content="Tulevat NHL-ottelut Suomen aikaan. Löydä primetime-pelit ja ilmaiset lähetykset MTV Subilta, Star Channelilta ja Viaplay TV:stä."><meta name="theme-color" content="#f7f7f0"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/icon-192.png"><script src="./theme.js"></script><link rel="stylesheet" href="./styles.css"><script src="./filters.js" defer></script></head>
+<html lang="fi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>Tulevat NHL-pelit Suomessa</title><meta name="description" content="Tulevat NHL-ottelut Suomen aikaan. Löydä primetime-pelit ja ilmaiset lähetykset MTV Subilta, Star Channelilta ja Viaplay TV:stä."><meta name="theme-color" content="#f7f7f0"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./icons/icon-192.png"><script src="./theme.js${assetQuery}"></script><link rel="stylesheet" href="./styles.css${assetQuery}"><script src="./filters.js${assetQuery}" defer></script></head>
 <body><a class="skip-link" href="#ottelut">Siirry otteluihin</a><div class="shell">
 <main>
 <header class="page-header"><h1 id="title">Tulevat NHL-pelit Suomessa</h1><p class="date-range">${dateLabel(localParts(now).date).split(' ').slice(1).join(' ')} – ${dateLabel(lastDate).split(' ').slice(1).join(' ')}</p></header>

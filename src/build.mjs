@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile, cp, rename, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -48,7 +49,11 @@ const staging = join(root, '.dist-build');
 await rm(staging, { recursive: true, force: true });
 await mkdir(staging, { recursive: true });
 await cp(join(root, 'public'), staging, { recursive: true });
-await writeFile(join(staging, 'index.html'), render(data));
+const assets = await Promise.all(['styles.css', 'filters.js', 'theme.js'].map(file => readFile(join(root, 'public', file))));
+const assetVersion = createHash('sha256').update(Buffer.concat(assets)).digest('hex').slice(0, 12);
+await writeFile(join(staging, 'index.html'), render({ ...data, assetVersion }));
+const worker = await readFile(join(root, 'public/sw.js'), 'utf8');
+await writeFile(join(staging, 'sw.js'), worker.replaceAll('__ASSET_VERSION__', assetVersion));
 await writeFile(join(staging, 'games.json'), JSON.stringify(data, null, 2));
 await writeFile(join(root, '.cache/match-report.json'), JSON.stringify({ generatedAt: data.generatedAt, unmatched }, null, 2));
 await rm(join(root, 'dist'), { recursive: true, force: true });
