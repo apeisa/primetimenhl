@@ -84,7 +84,7 @@ Starin osalta mukana on sen palvelimelta puuttuva julkinen Sectigo-välivarmenne
 ]
 ```
 
-Tämä on muotoesimerkki, ei vahvistus kyseisen pelin Disney+-lähetyksestä. Ottelun virallisen ajan voi tarvittaessa korjata ylimmän tason `startTimeUTC`-kentällä. Kanavakoodit: `sub`, `star`, `viaplaytv`, `viaplay`, `disney`. Korjaukset merkitään sivulla käsin vahvistetuiksi. Ne poistuvat näkymästä, kun ottelu alkaa.
+Tämä on muotoesimerkki, ei vahvistus kyseisen pelin Disney+-lähetyksestä. Ottelun virallisen ajan voi tarvittaessa korjata ylimmän tason `startTimeUTC`-kentällä. Kanavakoodit: `sub`, `star`, `viaplaytv`, `viaplay`, `disney`. Korjaukset merkitään sivulla käsin vahvistetuiksi. Klo 22.00–24.00 alkaneet pelit säilyvät näkymässä seuraavan aamun klo 02.00 asti; muut poistuvat ottelun alkaessa.
 
 ## Asetukset ja testit
 
@@ -103,4 +103,4 @@ Teema seuraa oletuksena järjestelmää. Teemavalinnan voi vaihtaa vaaleaksi tai
 
 Sivun voi asentaa kotinäytölle selaimen asennustoiminnolla (iPhonessa Safari → Jaa → Lisää Koti-valikkoon). Manifestin polut toimivat myös GitHub Pagesin projektihakemistossa. Sovellusikonia käytetään vain kotinäytöllä.
 
-Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Alkanut ottelu piilotetaan myös offline-tilassa.
+Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Klo 22.00–24.00 alkaneet pelit säilyvät näkymässä seuraavan aamun klo 02.00 asti myös offline-tilassa. Muut alkaneet pelit ja lähteen valmiiksi ilmoittamat ottelut piilotetaan.

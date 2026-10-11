@@ -1,3 +1,4 @@
+import { isWithinViewingWindow } from './time-window.js';
 const primetime = document.querySelector('#primetime');
 const freeOnly = document.querySelector('#free-only');
 const games = [...document.querySelectorAll('[data-game]')];
@@ -10,7 +11,7 @@ function update(saveUrl = false) {
   const now = Date.now();
   let count = 0;
   for (const game of games) {
-    game.hidden = Date.parse(game.dataset.start) <= now
+    game.hidden = !isWithinViewingWindow(game.dataset.start, now)
       || (primetime.checked && game.dataset.primetime !== 'true')
       || (freeOnly.checked && game.dataset.free !== 'true');
     if (!game.hidden) count++;

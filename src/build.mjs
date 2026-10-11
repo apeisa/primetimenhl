@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile, cp, rename, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { cachedSource } from './http.mjs';
-import { localParts } from './time.mjs';
+import { localParts, addDays } from './time.mjs';
 import { fetchNhl } from './sources/nhl.mjs';
 import { fetchStar, STAR_URL } from './sources/star.mjs';
 import { fetchMtv, MTV_URL } from './sources/mtv.mjs';
@@ -19,7 +19,7 @@ const days = Number(process.env.SCHEDULE_DAYS ?? 14);
 if (!Number.isInteger(days) || days < 1 || days > 31) throw new Error('SCHEDULE_DAYS pitää olla 1–31');
 const date = localParts(now).date;
 const options = { offline: process.argv.includes('--offline'), now };
-const context = { date, days };
+const context = { date: addDays(date, -1), days: days + 1 };
 const definitions = [
   { id: 'nhl', name: 'NHL', url: 'https://www.nhl.com/schedule', loader: fetchNhl },
   { id: 'sub', name: 'MTV Sub', url: MTV_URL, loader: fetchMtv },
@@ -49,8 +49,10 @@ const staging = join(root, '.dist-build');
 await rm(staging, { recursive: true, force: true });
 await mkdir(staging, { recursive: true });
 await cp(join(root, 'public'), staging, { recursive: true });
-const assets = await Promise.all(['styles.css', 'filters.js', 'theme.js'].map(file => readFile(join(root, 'public', file))));
+const assets = await Promise.all(['styles.css', 'filters.js', 'theme.js', 'time-window.js'].map(file => readFile(join(root, 'public', file))));
 const assetVersion = createHash('sha256').update(Buffer.concat(assets)).digest('hex').slice(0, 12);
+const filters = await readFile(join(root, 'public/filters.js'), 'utf8');
+await writeFile(join(staging, 'filters.js'), filters.replace("'./time-window.js'", `"./time-window.js?v=${assetVersion}"`));
 await writeFile(join(staging, 'index.html'), render({ ...data, assetVersion }));
 const worker = await readFile(join(root, 'public/sw.js'), 'utf8');
 await writeFile(join(staging, 'sw.js'), worker.replaceAll('__ASSET_VERSION__', assetVersion));

@@ -111,8 +111,9 @@ test('render includes real rows, escapes source text, defaults to free primetime
   assert.ok(html.includes('&lt;script&gt;'));
 });
 
-test('manual corrections merge into a game and started games disappear', () => {
+test('manual corrections merge into a game and late starts expire at 02:00', () => {
   const games = applyOverrides([{ ...game, broadcasts: [broadcast] }], [{ gameId: game.id, removeChannels: ['sub'], broadcasts: [{ channel: 'disney', url: 'https://www.disneyplus.com/' }] }]);
   assert.equal(games[0].broadcasts[0].channel, 'disney');
-  assert.equal(upcomingGames(games, { now: new Date('2026-10-11T22:00:00Z'), days: 14 }).length, 0);
+  assert.equal(upcomingGames(games, { now: new Date('2026-10-11T22:00:00Z'), days: 14 }).length, 1);
+  assert.equal(upcomingGames(games, { now: new Date('2026-10-11T23:00:00Z'), days: 14 }).length, 0);
 });

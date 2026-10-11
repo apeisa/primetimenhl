@@ -1,7 +1,7 @@
 // Network first: fresh schedules online, the last successful page offline.
 const CACHE_PREFIX = `primetimenhl:${self.registration.scope}:`;
 const CACHE = `${CACHE_PREFIX}__ASSET_VERSION__`;
-const ASSETS = ['./', './styles.css?v=__ASSET_VERSION__', './filters.js?v=__ASSET_VERSION__', './theme.js?v=__ASSET_VERSION__', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
+const ASSETS = ['./', './styles.css?v=__ASSET_VERSION__', './filters.js?v=__ASSET_VERSION__', './theme.js?v=__ASSET_VERSION__', './time-window.js?v=__ASSET_VERSION__', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

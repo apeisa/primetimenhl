@@ -1,3 +1,4 @@
+import { isWithinViewingWindow } from '../public/time-window.js';
 import { teamsInTitle } from './teams.mjs';
 import { viewingTime, addDays, localParts } from './time.mjs';
 
@@ -52,7 +53,7 @@ export function applyOverrides(games, overrides) {
 
 export function upcomingGames(games, { now, days }) {
   const endDate = addDays(localParts(now).date, days);
-  return games.filter(game => Date.parse(game.startTimeUTC) > now.getTime()
+  return games.filter(game => isWithinViewingWindow(game.startTimeUTC, now)
     && localParts(game.startTimeUTC).date < endDate
     && !['FINAL', 'OFF'].includes(game.gameState)
   ).sort((a, b) => Date.parse(a.startTimeUTC) - Date.parse(b.startTimeUTC))
