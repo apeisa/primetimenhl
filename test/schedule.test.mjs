@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { viewingTime, localParts } from '../src/time.mjs';
@@ -10,7 +10,7 @@ import { parseStar } from '../src/sources/star.mjs';
 import { parseMtv } from '../src/sources/mtv.mjs';
 import { parseViaplayTv, helsinkiInstant } from '../src/sources/viaplaytv.mjs';
 import { parseViaplay } from '../src/sources/viaplay.mjs';
-import { cachedSource } from '../src/http.mjs';
+import { cachedSource, verifiedCertificateChain } from '../src/http.mjs';
 import { render } from '../src/render.mjs';
 import { load } from 'cheerio';
 
@@ -91,6 +91,12 @@ test('failed source parsing preserves the last valid data and its original times
     assert.equal(fallback.fetchedAt, saved.fetchedAt); assert.equal(fallback.items.length, 1);
     assert.equal((await cachedSource('missing', dir, async () => {}, { offline: true })).status, 'error');
   } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
+test('the bundled missing intermediate is signed by a root already trusted by Node', async () => {
+  const pem = await readFile(new URL('../src/certificates/sectigo-ov-r36.pem', import.meta.url), 'utf8');
+  assert.ok(verifiedCertificateChain([pem]).includes(pem));
+  assert.throws(() => verifiedCertificateChain(['not a certificate']));
 });
 
 test('render includes real rows, escapes source text, defaults to free primetime and uses relative assets', () => {

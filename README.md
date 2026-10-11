@@ -60,6 +60,8 @@ Jokaisen lähteen viimeisin onnistuneesti jäsennetty tulos tallennetaan `.cache
 
 Jotkin palveluntarjoajien HTTPS-palvelimet lähettävät puutteellisen varmenneketjun. Tällöin GET-haku kokeilee järjestelmän `curl`-komentoa, joka tarkistaa varmenteet normaalisti. TLS-tarkistuksia ei poisteta käytöstä.
 
+Starin osalta mukana on sen palvelimelta puuttuva julkinen Sectigo-välivarmenne. Ohjelma tarkistaa sen allekirjoituksen Node.js:n luotettuun juurivarmenteeseen ennen käyttöä, jolloin myös Linuxissa tehtävä automaattinen haku toimii. Katso `src/certificates/README.md`.
+
 `npm run build:cached` rakentaa sivun ilman verkkohakuja olemassa olevasta välimuistista. Tämä on hyödyllinen ulkoasun kehityksessä. Yhdistämättömät ohjelmatiedot löytyvät `.cache/match-report.json`-tiedostosta. Kaikki ohjelmaoppaat eivät kata koko 14 päivän jaksoa, eikä puuttuva lähetys tarkoita, että ottelu olisi Suomessa katsomattomissa.
 
 ## Käsin tehtävät korjaukset

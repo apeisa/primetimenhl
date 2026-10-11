@@ -2,6 +2,7 @@ import { load } from 'cheerio';
 import { request, mapLimit, unique } from '../http.mjs';
 import { isGameTitle } from '../teams.mjs';
 import { addDays } from '../time.mjs';
+import { readFile } from 'node:fs/promises';
 
 export const STAR_URL = 'https://www.starchannel.fi/ohjelmaopas/star';
 export function parseStar(html, url = STAR_URL) {
@@ -24,11 +25,14 @@ export function parseStar(html, url = STAR_URL) {
 }
 
 export async function fetchStar({ date, days }) {
+  // Star omits its Sectigo intermediate. Its signature is checked against Node's
+  // trusted roots before use; the server certificate and hostname remain verified.
+  const intermediate = await readFile(new URL('../certificates/sectigo-ov-r36.pem', import.meta.url), 'utf8');
   // Each page includes the preceding week and a few days after its selected date.
   const dates = Array.from({ length: Math.ceil(days / 7) }, (_, i) => addDays(date, 7 + i * 7));
   const pages = await mapLimit(dates, 2, async d => {
     const url = `${STAR_URL}/${d.replaceAll('-', '')}`;
-    return parseStar(await request(url), url);
+    return parseStar(await request(url, { intermediateCertificates: [intermediate] }), url);
   });
   return { items: unique(pages.flatMap(p => p.items)), coverageThrough: pages.map(p => p.coverageThrough).sort().at(-1), url: STAR_URL };
 }
