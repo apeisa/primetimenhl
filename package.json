@@ -1,0 +1,15 @@
+{
+  "name": "nhl-suomessa",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Suomessa näkyvät NHL-ottelut staattisena verkkosivuna",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node src/build.mjs",
+    "build:cached": "node src/build.mjs --offline",
+    "test": "node --test",
+    "preview": "node src/preview.mjs"
+  },
+  "dependencies": { "cheerio": "1.2.0" }
+}
