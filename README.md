@@ -40,7 +40,7 @@ Sama `dist/` voidaan julkaista myös Surgeen tai muuhun staattiseen hostingiin. 
 | [NHL](https://www.nhl.com/schedule) / `api-web.nhle.com/v1/schedule/{date}` | Ottelu-ID, joukkueet, virallinen alkamisaika ja ottelun tila |
 | [MTV:n ohjelmaopas](https://www.mtv.fi/kanavat/aikataulu) | Subin ohjelmat MTV-sivun käyttämästä julkisesta GraphQL-rajapinnasta; vain `LIVE`-ohjelmat |
 | [Starin ohjelmaopas](https://www.starchannel.fi/ohjelmaopas/star) | Ottelunimet ja lähetyksen aikaleimat HTML:stä |
-| [Viaplay TV](https://viaplaytv.fi/ohjelmatiedot/) | Päivittäinen HTML-ohjelmaopas; vain `LIVE`-merkityt NHL-ottelut |
+| [Viaplay TV](https://viaplaytv.fi/ohjelmatiedot/) | Päivittäinen HTML-ohjelmaopas; vain `LIVE`-merkityt NHL-, NBA-, NFL- ja MLB-ottelut |
 | [Viaplay](https://viaplay.fi/urheilu/jaakiekko/nhl) | Julkinen `content.viaplay.fi/pcdash-fi/urheilu/jaakiekko/nhl` -ohjelmarajapinta; vain suorat ottelulähetykset |
 
 Disney+:lle ei ole automaattista hakijaa ensimmäisessä versiossa. Sen vahvistetut ottelut voi lisätä käsin alla kuvatulla tavalla. Star-lähetys ei yksin riitä todisteeksi saman ottelun saatavuudesta Disney+:ssa.
@@ -104,3 +104,21 @@ Teema seuraa oletuksena järjestelmää. Teemavalinnan voi vaihtaa vaaleaksi tai
 Sivun voi asentaa kotinäytölle selaimen asennustoiminnolla (iPhonessa Safari → Jaa → Lisää Koti-valikkoon). Manifestin polut toimivat myös GitHub Pagesin projektihakemistossa. Sovellusikonia käytetään vain kotinäytöllä.
 
 Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Klo 22.00–24.00 alkaneet pelit säilyvät näkymässä seuraavan aamun klo 02.00 asti myös offline-tilassa. Muut alkaneet pelit ja lähteen valmiiksi ilmoittamat ottelut piilotetaan.
+
+## NBA, NFL ja MLB
+
+Sivun liigavalinnalla voi näyttää NHL:n, NBA:n, NFL:n, MLB:n tai kaikki liigat. NHL on oletus. `?league=nba`, `?league=nfl`, `?league=mlb` ja `?league=all` ovat jaettavia osoitteita. Primetime- ja ilmaiskanavasuodattimet toimivat valitun liigan sisällä. MLB:n ilmaiskanavasuodatin voi näyttää tyhjää, koska maksutonta TV-lähetystä ei päätellä maksullisesta palvelusta.
+
+- NBA ja NFL: ESPN:n julkinen päiväkohtainen scoreboard (`site.api.espn.com/apis/site/v2/sports/{basketball/nba,football/nfl}/scoreboard`). Vastauksista otetaan alkuaika, joukkueet, ottelu-ID ja tila; Yhdysvaltain TV-kanavia ei käytetä Suomen katselutietoina.
+- MLB: liigan oma `statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team`. Ottelut erotetaan `gamePk`-tunnisteella myös doubleheaderissa.
+- MLB:n Viaplay: sama julkinen ohjelmarajapinta kuin NHL:ssä, polku `baseball/major-league-baseball`. Vain LIVE-ottelut.
+- Ruutu NFL: `https://www.ruutu.fi/ohjelmat/nfl`, vain `/stream/`-kortit ja niiden tulevat lähetysajat. RedZone ja tallenteet jätetään pois. Vuosi päätellään hakujaksosta, myös vuodenvaihteessa.
+- TV5, Kutonen, Nelonen, Jim ja Hero: Elisa Viihteen julkinen EPG (`https://viihde-epg-api-prod.csf.elisa.fi/epg/channels` ja `/schedule`). Haku tehdään kanavittain enintään seitsemän päivämäärän jaksoissa. Vain nimen tai kuvauksen suoraksi ilmoittamat NBA/NFL-ottelut hyväksytään.
+
+Jos NFL:n ilmaiskanavaopas ilmoittaa vain `NFL LIVE:` ilman joukkueita, lähetys yhdistetään ainoastaan saman ajankohdan yhteen suomenkieliseen Ruudun NFL-otteluun (enintään 20 minuutin ero). Molemmat lähdelinkit tallentuvat lähetyksen `evidence`-kenttään. Jos osuma puuttuu tai vaihtoehtoja on useita, ilmaislähetystä ei vahvisteta.
+
+NBA League Pass ja DAZN NFL Game Pass lisätään maksullisina Suomen tilauspalveluina liigan vahvistetuille otteluille. Saatavuuden lähteet: [NBA:n alueohje](https://support.watch.nba.com/hc/en-us/articles/115000586473-Global-NBA-League-Pass-Availability) ja [DAZN:n Game Pass -ohje](https://www.dazn.com/en-GB/help/articles/16310468908957-dazn-and-nfl-game-pass-the-ultimate-football-experience). Ne eivät tarkoita maksutonta TV-kanavaa tai yleistä HBO Max / Prime Video -tilausta. MLB.TV:n ottelukohtaista saatavuutta ja HBO Maxin erillistä otteluopasta ei automaattisesti päätellä; vahvistetun ottelun voi lisätä korjauksena.
+
+Korjauksessa voi antaa `league: "nba"`, `"nfl"` tai `"mlb"`; ilman liigaa se tarkoittaa NHL:ää. Ottelu-ID:n tyyppi vastaa lähdettä: NBA/NFL/MLB käyttävät merkkijonoa, NHL numeroa. Uudet kanavat ovat `tv5`, `kutonen`, `nelonen`, `jim`, `hero`, `ruutu`, `nba_pass`, `nfl_pass` ja `hbomax`.
+
+Lähteet käyttävät palveluiden julkisia verkkosyötteitä, eivät taattua kehittäjä-API-sopimusta. Validointi ja 48 tunnin välimuistisuoja ovat samat kuin NHL:ssä. Jos yhden uuden liigan ohjelmaa ei saada, muut liigat toimivat ja kyseisen liigan kohdalla näytetään ilmoitus. Lähteen onnistunut tyhjä ottelupäivä hyväksytään (esimerkiksi kausien välissä).

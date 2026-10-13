@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Tulevat NHL-pelit",
-  "short_name": "Primetime NHL",
+  "name": "Tulevat jenkkipelit",
+  "short_name": "Primetime",
   "lang": "fi",
   "start_url": "./",
   "scope": "./",

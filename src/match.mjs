@@ -2,40 +2,53 @@ import { isWithinViewingWindow } from '../public/time-window.js';
 import { teamsInTitle } from './teams.mjs';
 import { viewingTime, addDays, localParts } from './time.mjs';
 
+export const LEAGUES = { nhl: 'NHL', nba: 'NBA', nfl: 'NFL', mlb: 'MLB' };
+
 export const CHANNELS = {
   sub: { name: 'MTV Sub', free: true, url: 'https://www.mtv.fi/kanavat/aikataulu' },
   star: { name: 'Star Channel', free: true, url: 'https://www.starchannel.fi/ohjelmaopas/star' },
   viaplaytv: { name: 'Viaplay TV', free: true, url: 'https://viaplaytv.fi/ohjelmatiedot/' },
   viaplay: { name: 'Viaplay', free: false, url: 'https://viaplay.fi/urheilu/jaakiekko/nhl' },
+  tv5: { name: 'TV5', free: true, url: 'https://elisaviihde.fi/ohjelmaopas' },
+  kutonen: { name: 'Kutonen', free: true, url: 'https://elisaviihde.fi/ohjelmaopas' },
+  nelonen: { name: 'Nelonen', free: true, url: 'https://www.nelonen.fi/' },
+  jim: { name: 'Jim', free: true, url: 'https://www.nelonen.fi/' },
+  hero: { name: 'Hero', free: true, url: 'https://www.nelonen.fi/' },
+  ruutu: { name: 'Ruutu+ Urheilu', free: false, url: 'https://www.ruutu.fi/ohjelmat/nfl' },
+  nba_pass: { name: 'NBA League Pass', free: false, url: 'https://www.nba.com/watch/league-pass-stream' },
+  nfl_pass: { name: 'NFL Game Pass', free: false, url: 'https://www.dazn.com/nfl-game-pass' },
+  hbomax: { name: 'HBO Max Sports', free: false, url: 'https://www.hbomax.com/fi/fi/sports' },
   disney: { name: 'Disney+', free: false, url: 'https://www.disneyplus.com/' },
 };
 
 export function matchBroadcasts(games, broadcasts) {
-  const matched = new Map(games.map(game => [game.id, []]));
+  const matched = new Map(games.map(game => [`${game.league ?? 'nhl'}:${game.id}`, []]));
   const unmatched = [];
   for (const broadcast of broadcasts) {
     if (broadcast.live !== true || !CHANNELS[broadcast.channel]) continue;
-    const teams = teamsInTitle(broadcast.title);
+    const league = broadcast.league ?? 'nhl';
+    const teams = teamsInTitle(broadcast.title, league);
     const candidates = games.filter(game => {
+      if ((game.league ?? 'nhl') !== league) return false;
       if (teams.length !== 2 || !teams.includes(game.home.abbrev) || !teams.includes(game.away.abbrev)) return false;
       const difference = (Date.parse(broadcast.startTimeUTC) - Date.parse(game.startTimeUTC)) / 60_000;
       return difference >= -60 && difference <= 20 && game.scheduleState === 'OK';
     });
     if (candidates.length !== 1) { unmatched.push(broadcast); continue; }
-    const list = matched.get(candidates[0].id);
+    const list = matched.get(`${league}:${candidates[0].id}`);
     // A game may be split around the news; retain the first segment per channel.
     const existing = list.find(x => x.channel === broadcast.channel);
     if (!existing) list.push(broadcast);
     else if (broadcast.startTimeUTC < existing.startTimeUTC) Object.assign(existing, broadcast);
   }
-  return { games: games.map(game => ({ ...game, broadcasts: matched.get(game.id) })), unmatched };
+  return { games: games.map(game => ({ ...game, broadcasts: matched.get(`${game.league ?? 'nhl'}:${game.id}`) })), unmatched };
 }
 
 export function applyOverrides(games, overrides) {
   if (!Array.isArray(overrides)) throw new Error('overrides.json pitää olla lista');
-  const byId = new Map(games.map(game => [game.id, game]));
+  const byId = new Map(games.map(game => [`${game.league ?? 'nhl'}:${game.id}`, game]));
   for (const override of overrides) {
-    const game = byId.get(override.gameId);
+    const game = byId.get(`${override.league ?? 'nhl'}:${override.gameId}`);
     if (!game) continue;
     if (override.startTimeUTC) {
       if (!Number.isFinite(Date.parse(override.startTimeUTC))) throw new Error('Virheellinen korjattu alkamisaika');

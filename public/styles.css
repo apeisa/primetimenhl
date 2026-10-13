@@ -76,3 +76,10 @@ footer p { margin: 0 0 12px; }
   .teams a { font-size: 14px; }
   .versus { padding: 0 5px; }
 }
+
+.league-picker { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 18px; }
+.league-picker button { border: 1px solid var(--line); border-radius: 7px; padding: 10px 16px; color: var(--muted); background: var(--paper); font-size: 13px; font-weight: 700; cursor: pointer; }
+.league-picker button:hover { border-color: var(--deep); color: var(--ink); }
+.league-picker button[aria-pressed="true"] { color: var(--badge-ink); background: var(--badge); border-color: var(--deep); }
+.league-name { font-weight: 700; }
+@media (max-width: 620px) { .league-picker { gap: 6px; } .league-picker button { padding: 10px 12px; } }

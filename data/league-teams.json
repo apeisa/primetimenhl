@@ -1,0 +1,560 @@
+{
+  "nba": {
+    "ATL": [
+      "Atlanta Hawks",
+      "Hawks",
+      "Hawks",
+      "Atlanta"
+    ],
+    "BOS": [
+      "Boston Celtics",
+      "Celtics",
+      "Celtics",
+      "Boston"
+    ],
+    "BKN": [
+      "Brooklyn Nets",
+      "Nets",
+      "Nets",
+      "Brooklyn"
+    ],
+    "CHA": [
+      "Charlotte Hornets",
+      "Hornets",
+      "Hornets",
+      "Charlotte"
+    ],
+    "CHI": [
+      "Chicago Bulls",
+      "Bulls",
+      "Bulls",
+      "Chicago"
+    ],
+    "CLE": [
+      "Cleveland Cavaliers",
+      "Cavaliers",
+      "Cavaliers",
+      "Cleveland"
+    ],
+    "DAL": [
+      "Dallas Mavericks",
+      "Mavericks",
+      "Mavericks",
+      "Dallas"
+    ],
+    "DEN": [
+      "Denver Nuggets",
+      "Nuggets",
+      "Nuggets",
+      "Denver"
+    ],
+    "DET": [
+      "Detroit Pistons",
+      "Pistons",
+      "Pistons",
+      "Detroit"
+    ],
+    "GS": [
+      "Golden State Warriors",
+      "Warriors",
+      "Warriors",
+      "Golden State"
+    ],
+    "HOU": [
+      "Houston Rockets",
+      "Rockets",
+      "Rockets",
+      "Houston"
+    ],
+    "IND": [
+      "Indiana Pacers",
+      "Pacers",
+      "Pacers",
+      "Indiana"
+    ],
+    "LAC": [
+      "LA Clippers",
+      "Clippers",
+      "Clippers",
+      "LA"
+    ],
+    "LAL": [
+      "Los Angeles Lakers",
+      "Lakers",
+      "Lakers",
+      "Los Angeles"
+    ],
+    "MEM": [
+      "Memphis Grizzlies",
+      "Grizzlies",
+      "Grizzlies",
+      "Memphis"
+    ],
+    "MIA": [
+      "Miami Heat",
+      "Heat",
+      "Heat",
+      "Miami"
+    ],
+    "MIL": [
+      "Milwaukee Bucks",
+      "Bucks",
+      "Bucks",
+      "Milwaukee"
+    ],
+    "MIN": [
+      "Minnesota Timberwolves",
+      "Timberwolves",
+      "Timberwolves",
+      "Minnesota"
+    ],
+    "NO": [
+      "New Orleans Pelicans",
+      "Pelicans",
+      "Pelicans",
+      "New Orleans"
+    ],
+    "NY": [
+      "New York Knicks",
+      "Knicks",
+      "Knicks",
+      "New York"
+    ],
+    "OKC": [
+      "Oklahoma City Thunder",
+      "Thunder",
+      "Thunder",
+      "Oklahoma City"
+    ],
+    "ORL": [
+      "Orlando Magic",
+      "Magic",
+      "Magic",
+      "Orlando"
+    ],
+    "PHI": [
+      "Philadelphia 76ers",
+      "76ers",
+      "76ers",
+      "Philadelphia"
+    ],
+    "PHX": [
+      "Phoenix Suns",
+      "Suns",
+      "Suns",
+      "Phoenix"
+    ],
+    "POR": [
+      "Portland Trail Blazers",
+      "Trail Blazers",
+      "Trail Blazers",
+      "Portland"
+    ],
+    "SAC": [
+      "Sacramento Kings",
+      "Kings",
+      "Kings",
+      "Sacramento"
+    ],
+    "SA": [
+      "San Antonio Spurs",
+      "Spurs",
+      "Spurs",
+      "San Antonio"
+    ],
+    "TOR": [
+      "Toronto Raptors",
+      "Raptors",
+      "Raptors",
+      "Toronto"
+    ],
+    "UTAH": [
+      "Utah Jazz",
+      "Jazz",
+      "Jazz",
+      "Utah"
+    ],
+    "WSH": [
+      "Washington Wizards",
+      "Wizards",
+      "Wizards",
+      "Washington"
+    ]
+  },
+  "nfl": {
+    "ARI": [
+      "Arizona Cardinals",
+      "Cardinals",
+      "Cardinals",
+      "Arizona"
+    ],
+    "ATL": [
+      "Atlanta Falcons",
+      "Falcons",
+      "Falcons",
+      "Atlanta"
+    ],
+    "BAL": [
+      "Baltimore Ravens",
+      "Ravens",
+      "Ravens",
+      "Baltimore"
+    ],
+    "BUF": [
+      "Buffalo Bills",
+      "Bills",
+      "Bills",
+      "Buffalo"
+    ],
+    "CAR": [
+      "Carolina Panthers",
+      "Panthers",
+      "Panthers",
+      "Carolina"
+    ],
+    "CHI": [
+      "Chicago Bears",
+      "Bears",
+      "Bears",
+      "Chicago"
+    ],
+    "CIN": [
+      "Cincinnati Bengals",
+      "Bengals",
+      "Bengals",
+      "Cincinnati"
+    ],
+    "CLE": [
+      "Cleveland Browns",
+      "Browns",
+      "Browns",
+      "Cleveland"
+    ],
+    "DAL": [
+      "Dallas Cowboys",
+      "Cowboys",
+      "Cowboys",
+      "Dallas"
+    ],
+    "DEN": [
+      "Denver Broncos",
+      "Broncos",
+      "Broncos",
+      "Denver"
+    ],
+    "DET": [
+      "Detroit Lions",
+      "Lions",
+      "Lions",
+      "Detroit"
+    ],
+    "GB": [
+      "Green Bay Packers",
+      "Packers",
+      "Packers",
+      "Green Bay"
+    ],
+    "HOU": [
+      "Houston Texans",
+      "Texans",
+      "Texans",
+      "Houston"
+    ],
+    "IND": [
+      "Indianapolis Colts",
+      "Colts",
+      "Colts",
+      "Indianapolis"
+    ],
+    "JAX": [
+      "Jacksonville Jaguars",
+      "Jaguars",
+      "Jaguars",
+      "Jacksonville"
+    ],
+    "KC": [
+      "Kansas City Chiefs",
+      "Chiefs",
+      "Chiefs",
+      "Kansas City"
+    ],
+    "LV": [
+      "Las Vegas Raiders",
+      "Raiders",
+      "Raiders",
+      "Las Vegas"
+    ],
+    "LAC": [
+      "Los Angeles Chargers",
+      "Chargers",
+      "Chargers",
+      "Los Angeles"
+    ],
+    "LAR": [
+      "Los Angeles Rams",
+      "Rams",
+      "Rams",
+      "Los Angeles"
+    ],
+    "MIA": [
+      "Miami Dolphins",
+      "Dolphins",
+      "Dolphins",
+      "Miami"
+    ],
+    "MIN": [
+      "Minnesota Vikings",
+      "Vikings",
+      "Vikings",
+      "Minnesota"
+    ],
+    "NE": [
+      "New England Patriots",
+      "Patriots",
+      "Patriots",
+      "New England"
+    ],
+    "NO": [
+      "New Orleans Saints",
+      "Saints",
+      "Saints",
+      "New Orleans"
+    ],
+    "NYG": [
+      "New York Giants",
+      "Giants",
+      "Giants",
+      "New York"
+    ],
+    "NYJ": [
+      "New York Jets",
+      "Jets",
+      "Jets",
+      "New York"
+    ],
+    "PHI": [
+      "Philadelphia Eagles",
+      "Eagles",
+      "Eagles",
+      "Philadelphia"
+    ],
+    "PIT": [
+      "Pittsburgh Steelers",
+      "Steelers",
+      "Steelers",
+      "Pittsburgh"
+    ],
+    "SF": [
+      "San Francisco 49ers",
+      "49ers",
+      "49ers",
+      "San Francisco"
+    ],
+    "SEA": [
+      "Seattle Seahawks",
+      "Seahawks",
+      "Seahawks",
+      "Seattle"
+    ],
+    "TB": [
+      "Tampa Bay Buccaneers",
+      "Buccaneers",
+      "Buccaneers",
+      "Tampa Bay"
+    ],
+    "TEN": [
+      "Tennessee Titans",
+      "Titans",
+      "Titans",
+      "Tennessee"
+    ],
+    "WSH": [
+      "Washington Commanders",
+      "Commanders",
+      "Commanders",
+      "Washington"
+    ]
+  },
+  "mlb": {
+    "ATH": [
+      "Athletics",
+      "Athletics",
+      "Sacramento",
+      "Athletics"
+    ],
+    "PIT": [
+      "Pittsburgh Pirates",
+      "Pirates",
+      "Pittsburgh",
+      "Pittsburgh"
+    ],
+    "SD": [
+      "San Diego Padres",
+      "Padres",
+      "San Diego",
+      "San Diego"
+    ],
+    "SEA": [
+      "Seattle Mariners",
+      "Mariners",
+      "Seattle",
+      "Seattle"
+    ],
+    "SF": [
+      "San Francisco Giants",
+      "Giants",
+      "San Francisco",
+      "San Francisco"
+    ],
+    "STL": [
+      "St. Louis Cardinals",
+      "Cardinals",
+      "St. Louis",
+      "St. Louis"
+    ],
+    "TB": [
+      "Tampa Bay Rays",
+      "Rays",
+      "St. Petersburg",
+      "Tampa Bay"
+    ],
+    "TEX": [
+      "Texas Rangers",
+      "Rangers",
+      "Arlington",
+      "Texas"
+    ],
+    "TOR": [
+      "Toronto Blue Jays",
+      "Blue Jays",
+      "Toronto",
+      "Toronto"
+    ],
+    "MIN": [
+      "Minnesota Twins",
+      "Twins",
+      "Minneapolis",
+      "Minnesota"
+    ],
+    "PHI": [
+      "Philadelphia Phillies",
+      "Phillies",
+      "Philadelphia",
+      "Philadelphia"
+    ],
+    "ATL": [
+      "Atlanta Braves",
+      "Braves",
+      "Atlanta",
+      "Atlanta"
+    ],
+    "CWS": [
+      "Chicago White Sox",
+      "White Sox",
+      "Chicago",
+      "Chi White Sox"
+    ],
+    "MIA": [
+      "Miami Marlins",
+      "Marlins",
+      "Miami",
+      "Miami"
+    ],
+    "NYY": [
+      "New York Yankees",
+      "Yankees",
+      "Bronx",
+      "NY Yankees"
+    ],
+    "MIL": [
+      "Milwaukee Brewers",
+      "Brewers",
+      "Milwaukee",
+      "Milwaukee"
+    ],
+    "LAA": [
+      "Los Angeles Angels",
+      "Angels",
+      "Anaheim",
+      "LA Angels"
+    ],
+    "AZ": [
+      "Arizona Diamondbacks",
+      "D-backs",
+      "Phoenix",
+      "Arizona"
+    ],
+    "BAL": [
+      "Baltimore Orioles",
+      "Orioles",
+      "Baltimore",
+      "Baltimore"
+    ],
+    "BOS": [
+      "Boston Red Sox",
+      "Red Sox",
+      "Boston",
+      "Boston"
+    ],
+    "CHC": [
+      "Chicago Cubs",
+      "Cubs",
+      "Chicago",
+      "Chi Cubs"
+    ],
+    "CIN": [
+      "Cincinnati Reds",
+      "Reds",
+      "Cincinnati",
+      "Cincinnati"
+    ],
+    "CLE": [
+      "Cleveland Guardians",
+      "Guardians",
+      "Cleveland",
+      "Cleveland"
+    ],
+    "COL": [
+      "Colorado Rockies",
+      "Rockies",
+      "Denver",
+      "Colorado"
+    ],
+    "DET": [
+      "Detroit Tigers",
+      "Tigers",
+      "Detroit",
+      "Detroit"
+    ],
+    "HOU": [
+      "Houston Astros",
+      "Astros",
+      "Houston",
+      "Houston"
+    ],
+    "KC": [
+      "Kansas City Royals",
+      "Royals",
+      "Kansas City",
+      "Kansas City"
+    ],
+    "LAD": [
+      "Los Angeles Dodgers",
+      "Dodgers",
+      "Los Angeles",
+      "LA Dodgers"
+    ],
+    "WSH": [
+      "Washington Nationals",
+      "Nationals",
+      "Washington",
+      "Washington"
+    ],
+    "NYM": [
+      "New York Mets",
+      "Mets",
+      "Flushing",
+      "NY Mets"
+    ]
+  }
+}

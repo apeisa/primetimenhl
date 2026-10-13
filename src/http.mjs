@@ -25,7 +25,7 @@ function requestWithChain(url, chain) {
   const ca = verifiedCertificateChain(chain);
   return new Promise((resolve, reject) => {
     const req = httpsGet(url, { ca, rejectUnauthorized: true, timeout: 25_000,
-      headers: { 'user-agent': 'NHL-Suomessa/1.0 (public schedule aggregator)' },
+      headers: { 'user-agent': 'Primetime/1.0' },
     }, response => {
       if (response.statusCode !== 200) {
         response.resume(); reject(new Error(`HTTP ${response.statusCode} (${new URL(url).hostname})`)); return;
@@ -52,7 +52,7 @@ export async function request(url, options = {}) {
       if (options.intermediateCertificates) return await requestWithChain(url, options.intermediateCertificates);
       const response = await fetch(url, {
         ...options, signal: AbortSignal.timeout(25_000),
-        headers: { 'user-agent': 'NHL-Suomessa/1.0 (public schedule aggregator)', ...options.headers },
+        headers: { 'user-agent': 'Primetime/1.0', ...options.headers },
       });
       if (!response.ok) throw new Error(`HTTP ${response.status} (${new URL(url).hostname})`);
       return await response.text();

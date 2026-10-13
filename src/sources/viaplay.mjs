@@ -6,16 +6,16 @@ import { isGameTitle } from '../teams.mjs';
 export const VIAPLAY_URL = 'https://viaplay.fi/urheilu/jaakiekko/nhl';
 const API_URL = 'https://content.viaplay.fi/pcdash-fi/urheilu/jaakiekko/nhl';
 
-export function parseViaplay(raw) {
+export function parseViaplay(raw, league = 'nhl') {
   if (!raw._embedded || (raw.responseCode?.httpStatus ?? raw.responseCode) !== 200) throw new Error('Viaplayn ohjelmarajapinnan rakenne muuttui');
   const items = [];
   function walk(value) {
     if (!value || typeof value !== 'object') return;
-    if (value.type === 'sport' && value.content?.format?.title === 'NHL'
+    if (value.type === 'sport' && value.content?.format?.title === (league === 'mlb' ? 'Major League Baseball' : 'NHL')
         && value.system?.flags?.includes('liveStream') && value.recording?.airingType === 'live'
-        && isGameTitle(value.content.title) && Number.isFinite(Date.parse(value.epg?.start))) {
+        && isGameTitle(value.content.title, league) && Number.isFinite(Date.parse(value.epg?.start))) {
       items.push({
-        title: value.content.title, startTimeUTC: new Date(value.epg.start).toISOString(),
+        league, title: value.content.title, startTimeUTC: new Date(value.epg.start).toISOString(),
         channel: 'viaplay', live: true,
         url: value.publicPath ? `https://viaplay.fi/urheilu/${value.publicPath}` : VIAPLAY_URL,
       });
@@ -26,13 +26,14 @@ export function parseViaplay(raw) {
   return { items: unique(items), links: raw._links?.['viaplay:days'] ?? [] };
 }
 
-export async function fetchViaplay({ date, days }) {
-  const first = parseViaplay(JSON.parse(await request(`${API_URL}?date=${date}`)));
+export async function fetchViaplay({ date, days }, league = 'nhl') {
+  const api = league === 'mlb' ? 'https://content.viaplay.fi/pcdash-fi/urheilu/baseball/major-league-baseball' : API_URL;
+  const first = parseViaplay(JSON.parse(await request(`${api}?date=${date}`)), league);
   const links = first.links.filter(link => link.date > date && link.date < addDays(date, days));
   const pages = await mapLimit(links, 3, async link => {
     // Only follow the provider's public content API, never arbitrary source URLs.
     if (new URL(link.href).hostname !== 'content.viaplay.fi') throw new Error('Tuntematon Viaplayn ohjelmaosoite');
-    return parseViaplay(JSON.parse(await request(link.href)));
+    return parseViaplay(JSON.parse(await request(link.href)), league);
   });
   return {
     items: unique([first, ...pages].flatMap(p => p.items)),

@@ -10,6 +10,9 @@ import { fetchMtv, MTV_URL } from './sources/mtv.mjs';
 import { fetchViaplayTv, VIAPLAYTV_URL } from './sources/viaplaytv.mjs';
 import { fetchViaplay, VIAPLAY_URL } from './sources/viaplay.mjs';
 import { matchBroadcasts, applyOverrides, upcomingGames } from './match.mjs';
+import { fetchEspn, fetchMlb, addLeaguePasses } from './sources/american-leagues.mjs';
+import { fetchRuutu, RUUTU_URL } from './sources/ruutu.mjs';
+import { fetchFinnishEpg, EPG_URL, resolveUnnamedBroadcasts } from './sources/finnish-epg.mjs';
 import { render } from './render.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -21,7 +24,13 @@ const date = localParts(now).date;
 const options = { offline: process.argv.includes('--offline'), now };
 const context = { date: addDays(date, -1), days: days + 1 };
 const definitions = [
-  { id: 'nhl', name: 'NHL', url: 'https://www.nhl.com/schedule', loader: fetchNhl },
+  { id: 'nhl', name: 'NHL', schedule: true, league: 'nhl', url: 'https://www.nhl.com/schedule', loader: fetchNhl },
+  { id: 'nba', name: 'NBA / ESPN', schedule: true, league: 'nba', url: 'https://www.espn.com/nba/schedule', loader: c => fetchEspn(c, 'nba') },
+  { id: 'nfl', name: 'NFL / ESPN', schedule: true, league: 'nfl', url: 'https://www.espn.com/nfl/schedule', loader: c => fetchEspn(c, 'nfl') },
+  { id: 'mlb', name: 'MLB', schedule: true, league: 'mlb', url: 'https://www.mlb.com/schedule', loader: fetchMlb },
+  { id: 'viaplay-mlb', name: 'Viaplay MLB', url: 'https://viaplay.fi/urheilu/baseball/major-league-baseball', loader: c => fetchViaplay(c, 'mlb') },
+  { id: 'ruutu', name: 'Ruutu NFL', url: RUUTU_URL, loader: fetchRuutu },
+  { id: 'finnish-epg', name: 'TV5 / Kutonen / Nelonen / Jim / Hero', url: EPG_URL, loader: fetchFinnishEpg },
   { id: 'sub', name: 'MTV Sub', url: MTV_URL, loader: fetchMtv },
   { id: 'star', name: 'Star Channel', url: STAR_URL, loader: fetchStar },
   { id: 'viaplaytv', name: 'Viaplay TV', url: VIAPLAYTV_URL, loader: fetchViaplayTv },
@@ -32,17 +41,19 @@ const results = await Promise.all(definitions.map(async definition => {
   const age = result.fetchedAt ? now.getTime() - Date.parse(result.fetchedAt) : Infinity;
   if (result.status === 'cached' && age > 48 * 3_600_000) result.status = 'expired';
   console.log(`${definition.name}: ${result.status}, ${result.items.length} tietuetta${result.error ? ` (${result.error})` : ''}`);
-  return { ...result, id: definition.id, name: definition.name, url: definition.url };
+  return { ...result, id: definition.id, name: definition.name, url: definition.url, schedule: definition.schedule ?? false, league: definition.league };
 }));
 const nhl = results[0];
 if (!nhl.items.length || nhl.status === 'expired') {
   throw new Error('Tuoretta NHL-otteluohjelmaa ei ole. Edellistä sivua ei korvata.');
 }
-const broadcasts = results.slice(1).filter(source => !['expired', 'error'].includes(source.status))
-  .flatMap(source => source.items.map(b => ({ ...b, sourceFetchedAt: source.fetchedAt, sourceStatus: source.status })));
-const { games: matched, unmatched } = matchBroadcasts(nhl.items, broadcasts);
+const valid = results.filter(source => !['expired', 'error'].includes(source.status));
+const schedules = valid.filter(source => source.schedule).flatMap(source => source.items.map(game => ({ ...game, league: source.league })));
+const allBroadcasts = valid.filter(source => !source.schedule).flatMap(source => source.items.map(b => ({ ...b, sourceFetchedAt: source.fetchedAt, sourceStatus: source.status })));
+const broadcasts = resolveUnnamedBroadcasts(allBroadcasts, allBroadcasts.filter(b => b.channel === 'ruutu'));
+const { games: matched, unmatched } = matchBroadcasts(schedules, broadcasts);
 const overrides = JSON.parse(await readFile(join(root, 'data/overrides.json'), 'utf8'));
-const games = upcomingGames(applyOverrides(matched, overrides), { now, days });
+const games = upcomingGames(applyOverrides(addLeaguePasses(matched), overrides), { now, days });
 const sources = results.map(({ items, ...source }) => source);
 const data = { generatedAt: now.toISOString(), days, games, sources };
 const staging = join(root, '.dist-build');
