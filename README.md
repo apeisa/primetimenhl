@@ -27,7 +27,7 @@ Repo: <https://github.com/apeisa/primetimenhl>
 2. Pushaa `main`-haaraan tai käynnistä **Actions → Päivitä ja julkaise otteluopas → Run workflow**.
 3. Sivun osoite on <https://apeisa.github.io/primetimenhl/>.
 
-Workflow hakee ohjelmatiedot, ajaa testit ja julkaisee sivun kuuden tunnin välein. GitHubin ajastettu ajo voi viivästyä, eikä ole reaaliaikainen. Workflow ei tarvitse henkilökohtaista GitHub-tokenia: julkaisu käyttää ajon rajattuja Pages- ja OIDC-oikeuksia.
+Workflow hakee ohjelmatiedot, ajaa testit ja julkaisee sivun kerran vuorokaudessa (klo 05.17 UTC). GitHubin ajastettu ajo voi viivästyä, eikä ole reaaliaikainen. Workflow ei tarvitse henkilökohtaista GitHub-tokenia: julkaisu käyttää ajon rajattuja Pages- ja OIDC-oikeuksia.
 
 Oman domainin voi lisätä myöhemmin **Settings → Pages → Custom domain** -kohdassa ja GitHubin ilmoittamilla DNS-tietueilla. Lisää vasta silloin sama domain tiedostoon `public/CNAME`, jolloin se päätyy myös seuraaviin julkaisuihin. Domainia ei tarvita ensimmäiseen julkaisuun.
 
@@ -107,7 +107,7 @@ Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä
 
 ## NBA, NFL ja MLB
 
-Sivun liigavalinnalla voi näyttää NHL:n, NBA:n, NFL:n, MLB:n tai kaikki liigat. NHL on oletus. `?league=nba`, `?league=nfl`, `?league=mlb` ja `?league=all` ovat jaettavia osoitteita. Primetime- ja ilmaiskanavasuodattimet toimivat valitun liigan sisällä. MLB:n ilmaiskanavasuodatin voi näyttää tyhjää, koska maksutonta TV-lähetystä ei päätellä maksullisesta palvelusta.
+Sivun liigavalinnalla voi näyttää NHL:n, NBA:n, NFL:n, MLB:n tai kaikki liigat. Ensimmäisellä käynnistyksellä NHL on oletus. Selain ja asennettu PWA muistavat viimeksi valitun liigan omassa tallennustilassaan. Linkin kelvollinen `league`-parametri ohittaa tallennetun valinnan ja tallennetaan uudeksi oletukseksi. `?league=nba`, `?league=nfl`, `?league=mlb` ja `?league=all` ovat jaettavia osoitteita. Primetime- ja ilmaiskanavasuodattimet toimivat valitun liigan sisällä. MLB:n ilmaiskanavasuodatin voi näyttää tyhjää, koska maksutonta TV-lähetystä ei päätellä maksullisesta palvelusta.
 
 - NBA ja NFL: ESPN:n julkinen päiväkohtainen scoreboard (`site.api.espn.com/apis/site/v2/sports/{basketball/nba,football/nfl}/scoreboard`). Vastauksista otetaan alkuaika, joukkueet, ottelu-ID ja tila; Yhdysvaltain TV-kanavia ei käytetä Suomen katselutietoina.
 - MLB: liigan oma `statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team`. Ottelut erotetaan `gamePk`-tunnisteella myös doubleheaderissa.

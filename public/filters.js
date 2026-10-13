@@ -3,11 +3,22 @@ const primetime = document.querySelector('#primetime');
 const freeOnly = document.querySelector('#free-only');
 const leagueButtons = [...document.querySelectorAll('[data-league-choice]')];
 const leagues = { nhl: 'NHL', nba: 'NBA', nfl: 'NFL', mlb: 'MLB' };
+const validLeague = value => value === 'all' || Object.hasOwn(leagues, value);
 let league = 'nhl';
+try {
+  const saved = localStorage.getItem('primetime-league');
+  if (validLeague(saved)) league = saved;
+} catch {}
+const rememberLeague = () => {
+  try { localStorage.setItem('primetime-league', league); } catch {}
+};
 const games = [...document.querySelectorAll('[data-game]')];
 const days = [...document.querySelectorAll('[data-day]')];
 const params = new URLSearchParams(location.search);
-if (params.get('league') === 'all' || Object.hasOwn(leagues, params.get('league'))) league = params.get('league');
+if (validLeague(params.get('league'))) {
+  league = params.get('league');
+  rememberLeague();
+}
 if (params.has('primetime')) primetime.checked = params.get('primetime') !== '0';
 if (params.has('free')) freeOnly.checked = params.get('free') !== '0';
 
@@ -44,7 +55,7 @@ function update(saveUrl = false) {
 
 document.querySelector('.filters').addEventListener('submit', event => event.preventDefault());
 for (const input of [primetime, freeOnly]) input.addEventListener('change', () => update(true));
-for (const button of leagueButtons) button.addEventListener('click', () => { league = button.dataset.leagueChoice; update(true); });
+for (const button of leagueButtons) button.addEventListener('click', () => { league = button.dataset.leagueChoice; rememberLeague(); update(true); });
 document.querySelector('#show-all').addEventListener('click', () => {
   primetime.checked = false; freeOnly.checked = false; update(true);
 });
