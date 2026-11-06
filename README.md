@@ -17,7 +17,7 @@ npm run preview
 
 Esikatselu: <http://127.0.0.1:4173/>. `dist/` sisältää julkaistavan HTML:n, CSS:n, JavaScriptin, PWA-tiedostot ja `games.json`-aineiston. Sivun vierailut eivät tee pyyntöjä TV-oppaiden tai NHL:n rajapintoihin. Kaikki resurssipolut ovat suhteellisia, joten sivu toimii myös GitHub Pagesin projektihakemistossa.
 
-Suodattimien tila tallennetaan URL:n hakuehtoihin, joten näkymän voi jakaa linkkinä. Ilman hakuehtoja molemmat oletussuodattimet ovat päällä. Jo alkaneet pelit piilotetaan selaimessa minuutin välein.
+Suodattimien tila tallennetaan URL:n hakuehtoihin, joten näkymän voi jakaa linkkinä. Ilman hakuehtoja molemmat oletussuodattimet ovat päällä. Ottelut säilyvät listalla kolme tuntia alkamisestaan, myös lähteen ilmoittaessa ottelun päättyneeksi. Selain tarkistaa poistumisrajan minuutin välein.
 
 ## GitHub Pages
 
@@ -84,7 +84,7 @@ Starin osalta mukana on sen palvelimelta puuttuva julkinen Sectigo-välivarmenne
 ]
 ```
 
-Tämä on muotoesimerkki, ei vahvistus kyseisen pelin Disney+-lähetyksestä. Ottelun virallisen ajan voi tarvittaessa korjata ylimmän tason `startTimeUTC`-kentällä. Kanavakoodit: `sub`, `star`, `viaplaytv`, `viaplay`, `disney`. Korjaukset merkitään sivulla käsin vahvistetuiksi. Klo 22.00–24.00 alkaneet pelit säilyvät näkymässä seuraavan aamun klo 02.00 asti; muut poistuvat ottelun alkaessa.
+Tämä on muotoesimerkki, ei vahvistus kyseisen pelin Disney+-lähetyksestä. Ottelun virallisen ajan voi tarvittaessa korjata ylimmän tason `startTimeUTC`-kentällä. Kanavakoodit: `sub`, `star`, `viaplaytv`, `viaplay`, `disney`. Korjaukset merkitään sivulla käsin vahvistetuiksi. Ottelut poistuvat aikaisintaan kolme tuntia alkamisen jälkeen, kaikilla liigoilla ja kellonajoilla.
 
 ## Asetukset ja testit
 
@@ -103,7 +103,7 @@ Teema seuraa oletuksena järjestelmää. Teemavalinnan voi vaihtaa vaaleaksi tai
 
 Sivun voi asentaa kotinäytölle selaimen asennustoiminnolla (iPhonessa Safari → Jaa → Lisää Koti-valikkoon). Manifestin polut toimivat myös GitHub Pagesin projektihakemistossa. Sovellusikonia käytetään vain kotinäytöllä.
 
-Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Klo 22.00–24.00 alkaneet pelit säilyvät näkymässä seuraavan aamun klo 02.00 asti myös offline-tilassa. Muut alkaneet pelit ja lähteen valmiiksi ilmoittamat ottelut piilotetaan.
+Service worker hakee sivun ja resurssit ensisijaisesti verkosta. Ilman yhteyttä näytetään viimeksi tallennettu otteluohjelma; sen ikä näkyy päivitysajasta. Myös offline-tilassa ottelut säilyvät näkyvissä kolme tuntia alusta. Rajan laskenta käyttää kulunutta aikaa, joten keskiyö, kesäaika tai lähteen FINAL/OFF-tila eivät poista ottelua liian aikaisin.
 
 ## NBA, NFL ja MLB
 

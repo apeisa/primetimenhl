@@ -5,36 +5,40 @@ import { upcomingGames } from '../src/match.mjs';
 import { render } from '../src/render.mjs';
 import { load } from 'cheerio';
 
-// All boundaries are given in Helsinki's local time, with its actual UTC offset.
-test('late starts survive midnight until exactly 02:00; earlier and older starts do not', () => {
-  const start = '2026-10-11T22:00:00+03:00';
-  assert.equal(isWithinViewingWindow(start, '2026-10-11T22:30:00+03:00'), true);
-  assert.equal(isWithinViewingWindow(start, '2026-10-12T00:00:00+03:00'), true);
-  assert.equal(isWithinViewingWindow(start, '2026-10-12T01:59:59+03:00'), true);
-  assert.equal(isWithinViewingWindow(start, '2026-10-12T02:00:00+03:00'), false);
-  assert.equal(isWithinViewingWindow('2026-10-11T21:59:00+03:00', '2026-10-12T01:00:00+03:00'), false);
-  assert.equal(isWithinViewingWindow('2026-10-10T23:00:00+03:00', '2026-10-12T01:00:00+03:00'), false);
-  assert.equal(isWithinViewingWindow('2026-10-12T00:00:00+03:00', '2026-10-12T01:00:00+03:00'), true);
-  assert.equal(isWithinViewingWindow('2026-10-12T00:01:00+03:00', '2026-10-12T01:00:00+03:00'), false);
-  assert.equal(isWithinViewingWindow('2026-10-12T20:00:00+03:00', '2026-10-12T01:00:00+03:00'), true);
+test('every start stays visible until three hours have elapsed, regardless of time of day', () => {
+  for (const start of ['2026-11-06T12:00:00+02:00', '2026-11-06T21:00:00+02:00',
+    '2026-11-06T22:00:00+02:00', '2026-11-06T23:00:00+02:00',
+    '2026-11-07T00:00:00+02:00', '2026-11-07T00:01:00+02:00', '2026-11-07T03:30:00+02:00']) {
+    const instant = Date.parse(start);
+    for (const elapsed of [-1, 0, 60 * 60_000, 3 * 60 * 60_000 - 1]) {
+      assert.equal(isWithinViewingWindow(start, instant + elapsed), true, `${start}: ${elapsed}`);
+    }
+    assert.equal(isWithinViewingWindow(start, instant + 3 * 60 * 60_000), false);
+    assert.equal(isWithinViewingWindow(start, instant + 24 * 60 * 60_000), false);
+  }
+  assert.equal(isWithinViewingWindow('invalid', Date.now()), false);
 });
 
-test('02:00 cutoff follows Helsinki time in winter and on the DST change night', () => {
-  assert.equal(isWithinViewingWindow('2026-12-11T22:00:00+02:00', '2026-12-12T01:59:59+02:00'), true);
-  assert.equal(isWithinViewingWindow('2026-12-11T22:00:00+02:00', '2026-12-12T02:00:00+02:00'), false);
-  assert.equal(isWithinViewingWindow('2026-10-24T23:00:00+03:00', '2026-10-25T01:59:59+03:00'), true);
-  assert.equal(isWithinViewingWindow('2026-10-24T23:00:00+03:00', '2026-10-25T02:00:00+03:00'), false);
+test('three hours means elapsed time on both daylight-saving change nights', () => {
+  const autumn = '2026-10-25T02:30:00+03:00';
+  assert.equal(isWithinViewingWindow(autumn, '2026-10-25T04:29:59.999+02:00'), true);
+  assert.equal(isWithinViewingWindow(autumn, '2026-10-25T04:30:00+02:00'), false);
+  const spring = '2026-03-29T02:30:00+02:00';
+  assert.equal(isWithinViewingWindow(spring, '2026-03-29T06:29:59.999+03:00'), true);
+  assert.equal(isWithinViewingWindow(spring, '2026-03-29T06:30:00+03:00'), false);
 });
 
-test('post-midnight build retains live late games and previous date; finished games stay excluded', () => {
-  const game = { id: 1, startTimeUTC: '2026-10-11T20:00:00Z', gameState: 'LIVE', scheduleState: 'OK',
-    away: { name: 'Seattle Kraken' }, home: { name: 'Washington Capitals' },
+test('build retains all leagues and final states within three hours, keeping the previous date', () => {
+  const startTimeUTC = '2026-11-06T21:30:00Z'; // 23:30 Helsinki, remains until 02:30.
+  const game = { startTimeUTC, scheduleState: 'OK', away: { name: 'Away' }, home: { name: 'Home' },
     broadcasts: [{ channel: 'sub' }], url: 'https://www.nhl.com/' };
-  const now = new Date('2026-10-11T22:30:00Z');
-  const games = upcomingGames([game, { ...game, id: 2, gameState: 'FINAL' }], { now, days: 14 });
-  assert.equal(games.length, 1); assert.equal(games[0].viewingDate, '2026-10-11');
+  const input = ['nhl', 'nba', 'nfl', 'mlb'].flatMap(league => ['FUT', 'LIVE', 'FINAL', 'OFF'].map((gameState, id) => ({ ...game, league, gameState, id })));
+  const now = new Date('2026-11-07T00:29:59.999Z');
+  const games = upcomingGames(input, { now, days: 14 });
+  assert.equal(games.length, input.length);
+  assert.ok(games.every(g => g.viewingDate === '2026-11-06'));
   const $ = load(render({ games, generatedAt: now.toISOString(), days: 14 }));
-  assert.equal($('[data-game]:not([hidden])').length, 1);
-  assert.match($('.date-range').text(), /^11\. lokakuuta/);
-  assert.equal(upcomingGames([game], { now: new Date('2026-10-11T23:00:00Z'), days: 14 }).length, 0);
+  assert.equal($('[data-game]:not([hidden])').length, 4); // default NHL selection
+  assert.match($('.date-range').text(), /^6\. marraskuuta/);
+  assert.equal(upcomingGames(input, { now: new Date('2026-11-07T00:30:00Z'), days: 14 }).length, 0);
 });

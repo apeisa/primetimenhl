@@ -68,7 +68,6 @@ export function upcomingGames(games, { now, days }) {
   const endDate = addDays(localParts(now).date, days);
   return games.filter(game => isWithinViewingWindow(game.startTimeUTC, now)
     && localParts(game.startTimeUTC).date < endDate
-    && !['FINAL', 'OFF'].includes(game.gameState)
   ).sort((a, b) => Date.parse(a.startTimeUTC) - Date.parse(b.startTimeUTC))
     .map(game => ({ ...game, ...viewingTime(game.startTimeUTC), free: game.broadcasts.some(b => CHANNELS[b.channel].free) }));
 }
